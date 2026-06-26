@@ -1,11 +1,15 @@
 # Portainer GitOps stack for tablo2plex
-# Image is built from the Dockerfile in this repo (no prebuilt image exists).
+# Lives in deploy/ so Compose does NOT auto-load the repo's root .env
+# (that file uses ';' comments and is meant for the app, not for interpolation).
+# Image is built from the Dockerfile at the repo root (no prebuilt image exists).
 # All config is driven by environment variables, set in the Portainer stack UI.
 # Secrets (USER_NAME / USER_PASS) are NOT stored in git — set them in Portainer.
 services:
   tablo2plex:
     container_name: tablo2plex
-    build: .
+    build:
+      context: ..
+      dockerfile: Dockerfile
     image: tablo2plex:latest
     environment:
       - NAME=${NAME:-Tablo 4th Gen Proxy}
