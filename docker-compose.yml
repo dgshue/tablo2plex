@@ -1,0 +1,32 @@
+# Portainer GitOps stack for tablo2plex
+# Image is built from the Dockerfile in this repo (no prebuilt image exists).
+# All config is driven by environment variables, set in the Portainer stack UI.
+# Secrets (USER_NAME / USER_PASS) are NOT stored in git — set them in Portainer.
+services:
+  tablo2plex:
+    container_name: tablo2plex
+    build: .
+    image: tablo2plex:latest
+    environment:
+      - NAME=${NAME:-Tablo 4th Gen Proxy}
+      - DEVICE_ID=${DEVICE_ID:-12345678}
+      - LINEUP_UPDATE_INTERVAL=${LINEUP_UPDATE_INTERVAL:-30}
+      - CREATE_XML=${CREATE_XML:-false}
+      - GUIDE_DAYS=${GUIDE_DAYS:-2}
+      - INCLUDE_PSEUDOTV_GUIDE=${INCLUDE_PSEUDOTV_GUIDE:-false}
+      - INCLUDE_OTT=${INCLUDE_OTT:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-error}
+      - SAVE_LOG=${SAVE_LOG:-true}
+      - GUIDE_UPDATE_INTERVAL=${GUIDE_UPDATE_INTERVAL:-24}
+      # Optional: set to the Docker host IP (e.g. 192.168.1.10) if Plex
+      # discovery has trouble with the container's internal IP. Leave blank otherwise.
+      - IP_ADDRESS=${IP_ADDRESS:-}
+      # Tablo credentials — leave blank in git; set real values in Portainer.
+      # Only needed on first run to create /output/creds.bin, then can be cleared.
+      - USER_NAME=${USER_NAME:-}
+      - USER_PASS=${USER_PASS:-}
+    volumes:
+      - ${OUTPUT_PATH:-/opt/tablo2plex/output}:/output
+    ports:
+      - "${PORT:-8181}:8181/tcp"
+    restart: always
