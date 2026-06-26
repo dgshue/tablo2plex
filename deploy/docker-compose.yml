@@ -33,4 +33,13 @@ services:
       - ${OUTPUT_PATH:-/opt/tablo2plex/output}:/output
     ports:
       - "${PORT:-8181}:8181/tcp"
+    networks:
+      # Join Plex's network so Plex can reach this device directly.
+      # Override with NETWORK_NAME if Plex ever moves networks.
+      - plexnet
     restart: always
+
+networks:
+  plexnet:
+    name: ${NETWORK_NAME:-traefik_default}
+    external: true
